@@ -32,38 +32,62 @@ public class BibliotecaApp {
     private void cargarArchivo() {
 
         try {
-            File file = new File(ARCHIVO);
+
+            File file = new File("libros.txt");
 
             if (!file.exists()) {
                 file.createNewFile();
+                return;
             }
 
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String linea;
+            FileInputStream fis = new FileInputStream(file);
+            DataInputStream dis = new DataInputStream(fis);
 
-            while ((linea = br.readLine()) != null) {
-                listaLibros.add(Libro.fromFileString(linea));
+            while (true) {
+
+                String codigo = dis.readUTF();
+                String titulo = dis.readUTF();
+                String autor = dis.readUTF();
+                Genero genero =
+                        Genero.valueOf(dis.readUTF());
+                int anio = dis.readInt();
+                Estado estado =
+                        Estado.valueOf(dis.readUTF());
+
+                Libro libro = new Libro(
+                        codigo, titulo, autor, genero, anio, estado
+                );
+
+                listaLibros.add(libro);
             }
 
-            br.close();
-
+        } catch (EOFException e) {
+            // Fin normal del archivo
         } catch (Exception e) {
             System.out.println("Error al cargar archivo");
         }
     }
 
+
     public void guardarArchivo() {
 
         try {
-            BufferedWriter bw =
-                    new BufferedWriter(new FileWriter(ARCHIVO));
+
+            FileOutputStream fos = new FileOutputStream("libros.dat");
+            DataOutputStream dos = new DataOutputStream(fos);
 
             for (Libro l : listaLibros) {
-                bw.write(l.toFileString());
-                bw.newLine();
+
+                dos.writeUTF(l.getCodigo());
+                dos.writeUTF(l.getTitulo());
+                dos.writeUTF(l.getAutor());
+                dos.writeUTF(l.getGenero().name());
+                dos.writeInt(l.getAnio());
+                dos.writeUTF(l.getEstado().name());
             }
 
-            bw.close();
+            dos.close();
+            fos.close();
 
         } catch (Exception e) {
             System.out.println("Error al guardar archivo");

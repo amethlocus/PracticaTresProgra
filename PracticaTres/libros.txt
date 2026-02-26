@@ -1,0 +1,2 @@
+12;amed;pancho;NOVELA;2005;Disponible
+1000;hola;amed;HISTORIA;2005;Disponible

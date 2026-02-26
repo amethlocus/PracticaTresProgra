@@ -6,18 +6,228 @@ package heladeria.practicatres;
 
 /**
  *
- * @author Fabi
+ * @author abb
  */
+// Marlon Amed Bejarano Bolaños, 
+// Raúl Brenes Muñoz,
+// Fabian Gamboa Herrera,
+// Ian Steve Mejías Picado 
 public class Menu extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Menu.class.getName());
-
+    private BibliotecaApp app;
     /**
      * Creates new form Menu
      */
-    public Menu() {
+    public Menu(BibliotecaApp app) {
         initComponents();
+        this.app = app;
     }
+    
+    private Libro buscarPorCodigo(String codigo) {
+        for (Libro l : app.getListaLibros()) {
+            if (l.getCodigo().equals(codigo)) {
+                return l;
+            }
+        }
+        return null;
+    }
+    
+    private String leerTexto(String mensaje) {
+
+        while (true) {
+            String input = javax.swing.JOptionPane.showInputDialog(this, mensaje);
+
+            if (input == null) {
+                return null; 
+            }
+
+            input = input.trim();
+
+            if (!input.isEmpty()) {
+                return input;
+            }
+
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "El campo no puede estar vacío.");
+        }
+    }
+    
+    private Integer leerEntero(String mensaje) {
+
+        while (true) {
+            String input = javax.swing.JOptionPane.showInputDialog(this, mensaje);
+
+            if (input == null) {
+                return null;
+            }
+
+            try {
+                return Integer.parseInt(input.trim());
+
+            } catch (NumberFormatException e) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "Debe ingresar un número válido.");
+            }
+        }
+    }
+    
+    private Genero leerGenero() {
+
+        while (true) {
+            String input = javax.swing.JOptionPane.showInputDialog(this,
+                    "Género (NOVELA, HISTORIA, CIENCIA, INFANTIL):");
+
+            if (input == null) {
+                return null;
+            }
+
+            try {
+                return Genero.valueOf(input.trim().toUpperCase());
+
+            } catch (IllegalArgumentException e) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "Género inválido.");
+            }
+        }
+    }
+    
+    private String leerTextoEditable(String mensaje, String valorActual) {
+
+        String input = javax.swing.JOptionPane.showInputDialog(
+                this,
+                mensaje + "\nValor actual: " + valorActual + "\n(Deje vacío para mantenerlo)"
+        );
+
+        if (input == null) {
+            return null; 
+        }
+
+        input = input.trim();
+
+        if (input.isEmpty()) {
+            return valorActual; // mantiene el valor
+        }
+
+        return input;
+    }
+    
+    private Integer leerEnteroEditable(String mensaje, int valorActual) {
+
+        while (true) {
+
+            String input = javax.swing.JOptionPane.showInputDialog(
+                    this,
+                    mensaje + "\nValor actual: " + valorActual + "\n(Deje vacío para mantenerlo)"
+            );
+
+            if (input == null) {
+                return null;
+            }
+
+            input = input.trim();
+
+            if (input.isEmpty()) {
+                return valorActual;
+            }
+
+            try {
+                return Integer.parseInt(input);
+
+            } catch (NumberFormatException e) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "Debe ingresar un número válido.");
+            }
+        }
+    }
+    
+    private Genero leerGeneroEditable(Genero actual) {
+
+        while (true) {
+
+            String input = javax.swing.JOptionPane.showInputDialog(
+                    this,
+                    "Nuevo género (NOVELA, HISTORIA, CIENCIA, INFANTIL):"
+                    + "\nValor actual: " + actual
+                    + "\n(Deje vacío para mantenerlo)"
+            );
+
+            if (input == null) {
+                return null;
+            }
+
+            input = input.trim();
+
+            if (input.isEmpty()) {
+                return actual;
+            }
+
+            try {
+                return Genero.valueOf(input.toUpperCase());
+
+            } catch (IllegalArgumentException e) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "Género inválido.");
+            }
+        }
+    }
+    
+    private Estado leerEstado() {
+
+        while (true) {
+
+            String input = javax.swing.JOptionPane.showInputDialog(
+                    this,
+                    "Estado (DISPONIBLE, PRESTADO):"
+            );
+
+            if (input == null) {
+                return null;
+            }
+
+            try {
+                return Estado.valueOf(input.trim().toUpperCase());
+
+            } catch (IllegalArgumentException e) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "Estado inválido.");
+            }
+        }
+    }
+    
+    private Estado leerEstadoEditable(Estado actual) {
+
+    while (true) {
+
+        String input = javax.swing.JOptionPane.showInputDialog(
+                this,
+                "Nuevo estado (DISPONIBLE, PRESTADO):"
+                + "\nValor actual: " + actual
+                + "\n(Deje vacío para mantenerlo)"
+        );
+
+        if (input == null) {
+            return null;
+        }
+
+        input = input.trim();
+
+        if (input.isEmpty()) {
+            return actual;
+        }
+
+        try {
+            return Estado.valueOf(input.toUpperCase());
+
+        } catch (IllegalArgumentException e) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Estado inválido.");
+        }
+    }
+}
+
+
+
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -103,53 +313,126 @@ public class Menu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        String codigo = leerTexto("Código:");
+        if (codigo == null) return;
+
+        if (buscarPorCodigo(codigo) != null) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "El código ya existe.");
+            return;
+        }
+
+        String titulo = leerTexto("Título:");
+        if (titulo == null) return;
+
+        String autor = leerTexto("Autor:");
+        if (autor == null) return;
+
+        Genero genero = leerGenero();
+        if (genero == null) return;
+
+        Integer anio = leerEntero("Año de publicación:");
+        if (anio == null) return;
+
+        Libro libro = new Libro(codigo, titulo, autor, genero, anio, Estado.DISPONIBLE);
+
+        app.getListaLibros().add(libro);
+
+        javax.swing.JOptionPane.showMessageDialog(this,
+                "Libro registrado correctamente.");
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // TODO add your handling code here:
+        app.guardarArchivo();
+        System.exit(0);
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+
+    String codigo = leerTexto("Código del libro a editar:");
+        if (codigo == null) return;
+
+        Libro libro = buscarPorCodigo(codigo);
+
+        if (libro == null) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Libro no encontrado.");
+            return;
+        }
+
+        // Mostrar información actual
+        javax.swing.JOptionPane.showMessageDialog(this,
+                "INFORMACIÓN ACTUAL DEL LIBRO:\n\n" + libro.toString());
+
+        // Nuevos valores
+        String nuevoTitulo = leerTextoEditable("Nuevo título:", libro.getTitulo());
+        if (nuevoTitulo == null) return;
+
+        String nuevoAutor = leerTextoEditable("Nuevo autor:", libro.getAutor());
+        if (nuevoAutor == null) return;
+
+        Genero nuevoGenero = leerGeneroEditable(libro.getGenero());
+        if (nuevoGenero == null) return;
+
+        Integer nuevoAnio = leerEnteroEditable("Nuevo año:", libro.getAnio());
+        if (nuevoAnio == null) return;
+
+        Estado nuevoEstado = leerEstadoEditable(libro.getEstado());
+        if (nuevoEstado == null) return;
+
+        // Actualizar objeto
+        libro.setTitulo(nuevoTitulo);
+        libro.setAutor(nuevoAutor);
+        libro.setGenero(nuevoGenero);
+        libro.setAnio(nuevoAnio);
+        libro.setEstado(nuevoEstado);
+
+        javax.swing.JOptionPane.showMessageDialog(this,
+                "Libro actualizado correctamente.");
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
+        
+        String codigo = javax.swing.JOptionPane.showInputDialog(this, "Código:");
+        Libro libro = buscarPorCodigo(codigo);
+
+        if (libro != null) {
+            javax.swing.JOptionPane.showMessageDialog(this, libro.toString());
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this, "No encontrado");
+        }                
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
+       
+        String codigo = javax.swing.JOptionPane.showInputDialog(this, "Código:");
+        Libro libro = buscarPorCodigo(codigo);
+
+        if (libro != null) {
+            app.getListaLibros().remove(libro);
+            javax.swing.JOptionPane.showMessageDialog(this, "Libro eliminado");
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this, "No encontrado");
+        }        
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // TODO add your handling code here:
+
+        if (app.getListaLibros().isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "No hay libros registrados");
+            return;
+        }
+
+        String mensaje = "";
+
+        for (Libro l : app.getListaLibros()) {
+            mensaje += l.toString() + "\n-------------------\n";
+        }
+
+        javax.swing.JOptionPane.showMessageDialog(this, mensaje);
+            
     }//GEN-LAST:event_jButton5ActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new Menu().setVisible(true));
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;

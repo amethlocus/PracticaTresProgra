@@ -12,7 +12,6 @@ package heladeria.practicatres;
 // Raúl Brenes Muñoz,
 // Fabian Gamboa Herrera,
 // Ian Steve Mejías Picado 
-public enum Genero {
-    NOVELA, HISTORIA,
-    CIENCIA, INFANTIL
+public enum Estado {
+    DISPONIBLE, PRESTADO
 }

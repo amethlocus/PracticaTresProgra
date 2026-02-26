@@ -74,6 +74,7 @@ public class BibliotecaApp {
         try {
 
             FileOutputStream fos = new FileOutputStream("libros.txt");
+
             DataOutputStream dos = new DataOutputStream(fos);
 
             for (Libro l : listaLibros) {
